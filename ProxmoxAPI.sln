@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProxmoxAPI", "ProxmoxAPI\ProxmoxAPI.csproj", "{4B6E8102-A606-40D2-A089-CD9C1C4693E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxmoxTest", "ProxmoxTest\ProxmoxTest.csproj", "{EDF71DAC-92FB-4EA5-A0DF-EF97FE161FD3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B6E8102-A606-40D2-A089-CD9C1C4693E3} = {4B6E8102-A606-40D2-A089-CD9C1C4693E3}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B6E8102-A606-40D2-A089-CD9C1C4693E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B6E8102-A606-40D2-A089-CD9C1C4693E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B6E8102-A606-40D2-A089-CD9C1C4693E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B6E8102-A606-40D2-A089-CD9C1C4693E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF71DAC-92FB-4EA5-A0DF-EF97FE161FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF71DAC-92FB-4EA5-A0DF-EF97FE161FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF71DAC-92FB-4EA5-A0DF-EF97FE161FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF71DAC-92FB-4EA5-A0DF-EF97FE161FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4980E964-E550-4D81-A423-A9D5553554B5}
+	EndGlobalSection
+EndGlobal
