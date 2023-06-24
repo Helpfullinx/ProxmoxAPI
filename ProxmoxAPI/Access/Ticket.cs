@@ -1,77 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using ProxmoxAPI.Utility;
+using ProxmoxAPI.Utility.HttpRequests;
 
 namespace ProxmoxAPI.Access
 {
-    public class Ticket : POST
+    [Serializable]
+    public class Ticket : POST 
     {
-        private string ticket;
-        private string clusterName;
-        private string CSRFPreventionToken;
-        private Connection connection;
+        const string requestUri = "api2/json/access/ticket";
+
+        public string username { get; set; }
+        public string ticket { get; set; }
+        public string clustername { get; set; }
+        public string CSRFPreventionToken { get; set; }
 
         public Ticket()
         {
-            ticket = string.Empty;
-            clusterName = string.Empty;
-            CSRFPreventionToken = string.Empty;
-            connection = new Connection();
-        }
-
-        public Ticket(string ticket, string clusterName, string csrfPreventationToken)
-        {
-            this.ticket = ticket;
-            this.clusterName = clusterName;
-            CSRFPreventionToken = csrfPreventationToken;
-            connection = new Connection();
         }
 
         /// <summary>
-        /// Takes a Connection object and performs an HTTP request against the server to obtain the values for the ticket, CSRFPrevention Token, and the clusterName
+        /// Populates the Ticket given there is a username and password
         /// </summary>
-        /// <param name="con"></param>
-        public Ticket(Connection con)
+        public async Task<HttpResponseMessage> POST()
         {
-            connection = con;
-            var ticket_raw = POST().Result;
-            var data = JsonObject.Parse(ticket_raw)["data"];
-
-            ticket = data["ticket"].ToString();
-            CSRFPreventionToken = data["CSRFPreventionToken"].ToString();
-            clusterName = data["clustername"].ToString();
-
-        }
-
-        public string getTicket { get { return ticket; } }
-        public string getCSRFPreventionToken { get { return CSRFPreventionToken; } }
-        public string getClusterName { get { return clusterName; } }
-
-        public async Task<string> POST()
-        {
-            var values = new Dictionary<string, string>
+            Connection.user.EnsureUserAndPassNonNull();
+            Dictionary<string, string> values = new()
             {
-                { "username", connection.User.UserName },
-                { "password", connection.User.Password }
+                { "username", Connection.user.UserName },
+                { "password", Connection.user.Password }
             };
 
-            var content = new FormUrlEncodedContent(values);
+            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
 
-            var requestUri = "api2/json/access/ticket";
-
-            using HttpResponseMessage response = await HttpInterface.Get(connection.baseURI()).PostAsync(requestUri, content);
+            using HttpResponseMessage response = await HttpInterface.client.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
+            using HttpContent respContent = response.Content;
             {
-                using HttpContent respContent = response.Content;
-                {
-                    return respContent.ReadAsStringAsync().Result;
-                }
+                string ticketRaw = respContent.ReadAsStringAsync().Result;
+
+               // Console.WriteLine(ticketRaw);
+
+                JsonNode data = JsonNode.Parse(ticketRaw)["data"];
+
+                //Console.WriteLine(data.ToString());
+                username = data["username"].ToString();
+
+                ticket = data["ticket"].ToString();
+                CSRFPreventionToken = data["CSRFPreventionToken"].ToString();
+
+                var test = data["clustername"];
+                clustername = (test == null) ? string.Empty : test.ToString();
+
+
+                return response;
             }
+        }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
         }
     }
 }

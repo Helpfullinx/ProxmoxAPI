@@ -1,20 +1,37 @@
 ﻿using ProxmoxAPI.Access;
+using ProxmoxAPI.Access.Domain;
 using ProxmoxAPI.Utility;
-using System;
-
 
 internal class Program
 {
-    private static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-        var username = Environment.GetEnvironmentVariable("PVE_USERNAME", EnvironmentVariableTarget.User);
-        var password = Environment.GetEnvironmentVariable("PVE_PASSWORD", EnvironmentVariableTarget.User);
-        var user = new User(username, password);
+        string username = Environment.GetEnvironmentVariable("PVE_USERNAME", EnvironmentVariableTarget.User);
+        string password = Environment.GetEnvironmentVariable("PVE_PASSWORD", EnvironmentVariableTarget.User);
 
-        var socket = new Socket("100.124.115.75", "8006");
-        var con = new Connection(user, socket);
-        var ticket = new Ticket(con);
+        User user = new User(username, password, new Realm("pam", Realm.RealmType.PAM));
+        Socket socket = new("100.124.115.75", "8006");
+        Connection.socket = socket;
+        Connection.user = user;
 
-        Console.WriteLine(ticket.getTicket);
+        HttpInterface.client.BaseAddress = new Uri("https://" + socket.ToString() + "/");
+
+        Ticket ticket = new Ticket();
+        Domain domain = new Domain();
+        try
+        {
+            await ticket.POST();
+            await domain.GET();
+        }
+        catch (ArgumentNullException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        Console.WriteLine(ticket + "\n" + domain);
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProxmoxAPI.Utility
+namespace ProxmoxAPI.Utility.HttpRequests
 {
-    public interface POST
+    public interface DELETE
     {
-        Task<String> POST();
+        Task<HttpResponseMessage> DELETE();
     }
 }

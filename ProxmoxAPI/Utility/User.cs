@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProxmoxAPI.access.Domain;
+﻿using ProxmoxAPI.Access.Domain;
 
 namespace ProxmoxAPI.Utility
 {
@@ -11,23 +6,21 @@ namespace ProxmoxAPI.Utility
     {
         private string username;
         private string password;
-        private Domain domain;
-
-        public User()
-        {
-            username = string.Empty;
-            password = string.Empty;
-            domain = new Domain();
-        }
-
-        public User(string username, string password)
+        private readonly Realm realm;
+        
+        public User(string username, string password, Realm realm)
         {
             this.username = username;
             this.password = password;
-            domain = new Domain();
+            this.realm = realm;
         }
 
-        public string UserName { get { return (username + "@" + domain.Type); } set { username = value; } }
+        public void EnsureUserAndPassNonNull()
+        {
+            if (username == null || password == null) throw new ArgumentNullException("username or password");
+        }
+
+        public string UserName { get { return (username + "@" + realm.type.ToString().ToLower()); } set { username = value; } }
 
         public string Password { get { return password; } set { password = value; } }
     }

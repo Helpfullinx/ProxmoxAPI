@@ -1,31 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProxmoxAPI.Utility;
+using System.Text.Json.Nodes;
+using System.Text.Json;
+using ProxmoxAPI.Utility.HttpRequests;
 
-namespace ProxmoxAPI.access.Domain
+namespace ProxmoxAPI.Access.Domain
 {
-    public class Domain
+    public class Domain : GET , POST
     {
-        private string realm;
-        private string type;
+        const string requestUri = "api2/json/access/domains";
 
+        private List<Realm> realms = new();
 
-        public Domain() {
-            realm = "default";
-            type = "pam";
-        }
-
-        public Domain(string realm, string type)
+        public Domain()
         {
-            this.realm = realm;
-            this.type = type;
         }
 
-        public string Realm { get { return realm; } set { realm = value; } }
-        public string Type { get { return type; }  set { type = value; } }
+        public List<Realm> Realm { get { return realms; } set { realms = value; } }
 
-        //TODO: Add GET and POST methods for Domain and Realms
+        public async Task<HttpResponseMessage> GET()
+        {
+            using HttpResponseMessage response = await HttpInterface.client.GetAsync(requestUri);
+            response.EnsureSuccessStatusCode();
+            using HttpContent respContent = response.Content;
+            {
+                string ticketRaw = respContent.ReadAsStringAsync().Result;
+                JsonNode data = JsonNode.Parse(ticketRaw)["data"];
+
+                foreach (var item in data.AsArray())
+                {
+                    realms.Add(JsonSerializer.Deserialize<Realm>(item));
+                }
+
+                return response;
+            }
+        }
+
+        public Task<HttpResponseMessage> POST()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            string s = string.Empty;
+            foreach (Realm realm in realms)
+            {
+                 s += realm + "\n";
+            }
+
+            return s;
+        }
     }
 }

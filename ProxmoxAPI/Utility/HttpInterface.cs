@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProxmoxAPI.Utility
+﻿namespace ProxmoxAPI.Utility
 {
     public class HttpInterface
     {
-        private static readonly HttpClient client;
+        public static HttpClient client { get; set; }
 
         static HttpInterface()
         {
@@ -18,12 +12,6 @@ namespace ProxmoxAPI.Utility
             };
 
             client = new HttpClient(handler);
-        }
-
-        public static HttpClient Get(Uri uri)
-        {
-            client.BaseAddress = uri;
-            return client;
         }
     }
 }
