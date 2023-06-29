@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace ProxmoxAPI.Access.Domain
 {
     [Serializable]
-    public class Realm : GET, POST
+    public class Realm : Postable, HttpRequestable
     {
         public enum RealmType
         {
@@ -38,21 +38,19 @@ namespace ProxmoxAPI.Access.Domain
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public TfaType tfa { get; set; }
 
-
-        public Task<HttpResponseMessage> GET()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<HttpResponseMessage> POST()
-        {
-            throw new NotImplementedException();
-        }
-
         public override string ToString()
         {
             return JsonSerializer.Serialize(this);
         }
 
+        public FormUrlEncodedContent FormContent()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetURI()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

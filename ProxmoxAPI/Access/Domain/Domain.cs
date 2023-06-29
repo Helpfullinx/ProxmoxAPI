@@ -2,13 +2,15 @@
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using ProxmoxAPI.Utility.HttpRequests;
+using System.Text.Json.Serialization;
 
 namespace ProxmoxAPI.Access.Domain
 {
-    public class Domain : GET , POST
+    public class Domain : Postable, HttpRequestable
     {
         const string requestUri = "api2/json/access/domains";
 
+        [JsonPropertyName("realm")]
         private List<Realm> realms = new();
 
         public Domain()
@@ -16,6 +18,11 @@ namespace ProxmoxAPI.Access.Domain
         }
 
         public List<Realm> Realm { get { return realms; } set { realms = value; } }
+
+        public FormUrlEncodedContent FormContent()
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<HttpResponseMessage> GET()
         {
@@ -33,6 +40,11 @@ namespace ProxmoxAPI.Access.Domain
 
                 return response;
             }
+        }
+
+        public string GetURI()
+        {
+            throw new NotImplementedException();
         }
 
         public Task<HttpResponseMessage> POST()

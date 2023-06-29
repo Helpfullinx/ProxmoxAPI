@@ -5,8 +5,7 @@ using ProxmoxAPI.Utility.HttpRequests;
 
 namespace ProxmoxAPI.Access
 {
-    [Serializable]
-    public class Ticket : POST 
+    public class Ticket : HttpRequestable, Postable
     {
         const string requestUri = "api2/json/access/ticket";
 
@@ -19,47 +18,28 @@ namespace ProxmoxAPI.Access
         {
         }
 
-        /// <summary>
-        /// Populates the Ticket given there is a username and password
-        /// </summary>
-        public async Task<HttpResponseMessage> POST()
+        public string GetURI()
         {
-            Connection.user.EnsureUserAndPassNonNull();
-            Dictionary<string, string> values = new()
-            {
-                { "username", Connection.user.UserName },
-                { "password", Connection.user.Password }
-            };
-
-            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
-
-            using HttpResponseMessage response = await HttpInterface.client.PostAsync(requestUri, content);
-            response.EnsureSuccessStatusCode();
-            using HttpContent respContent = response.Content;
-            {
-                string ticketRaw = respContent.ReadAsStringAsync().Result;
-
-               // Console.WriteLine(ticketRaw);
-
-                JsonNode data = JsonNode.Parse(ticketRaw)["data"];
-
-                //Console.WriteLine(data.ToString());
-                username = data["username"].ToString();
-
-                ticket = data["ticket"].ToString();
-                CSRFPreventionToken = data["CSRFPreventionToken"].ToString();
-
-                var test = data["clustername"];
-                clustername = (test == null) ? string.Empty : test.ToString();
-
-
-                return response;
-            }
+            return requestUri;
         }
+
+        public FormUrlEncodedContent FormContent()
+        {
+            Dictionary<string, string> values = new()
+                {
+                    { "username", User.Username },
+                    { "password", User.Password }
+                };
+            return new FormUrlEncodedContent(values);
+        }
+
+        #region Object Override
 
         public override string ToString()
         {
             return JsonSerializer.Serialize(this);
         }
+
+        #endregion
     }
 }

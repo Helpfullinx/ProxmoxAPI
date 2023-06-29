@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProxmoxAPI.Utility.HttpRequests
 {
-    public interface PUT
+    internal interface HttpRequestable
     {
-        Task<HttpResponseMessage> PUT();
+        public string GetURI();
     }
 }

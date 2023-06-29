@@ -1,23 +1,15 @@
 ﻿namespace ProxmoxAPI.Utility
 {
-    public class Socket
+    public static class Socket
     {
-        private string ip;
-        private string port;
+        private static string ip;
+        private static string port;
 
-        public Socket(string ip, string port)
-        {
-            this.ip = ip;
-            this.port = port;
-        }
 
-        public string IP { get { return ip; } }
-        public string Port { get { return port; } }
+        public static string IP { get { return ip; } set { ip = value; } }
+        public static string Port { get { return port; } set { port = value; } }
 
-        public override string ToString()
-        {
-            return ip + ":" + port;
-        }
-        
+        public static new string ToString => ip + ":" + port;
+
     }
 }

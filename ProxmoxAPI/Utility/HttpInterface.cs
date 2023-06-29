@@ -1,6 +1,6 @@
 ﻿namespace ProxmoxAPI.Utility
 {
-    public class HttpInterface
+    internal class HttpInterface
     {
         public static HttpClient client { get; set; }
 

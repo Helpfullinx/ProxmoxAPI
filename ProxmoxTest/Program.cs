@@ -9,29 +9,26 @@ internal class Program
         string username = Environment.GetEnvironmentVariable("PVE_USERNAME", EnvironmentVariableTarget.User);
         string password = Environment.GetEnvironmentVariable("PVE_PASSWORD", EnvironmentVariableTarget.User);
 
-        User user = new User(username, password, new Realm("pam", Realm.RealmType.PAM));
-        Socket socket = new("100.124.115.75", "8006");
-        Connection.socket = socket;
-        Connection.user = user;
+        User.Username = username;
+        User.Password = password;
+        User.Realm = new Realm("pam", Realm.RealmType.PAM);
 
-        HttpInterface.client.BaseAddress = new Uri("https://" + socket.ToString() + "/");
+        Socket.IP = "100.124.115.75";
+        Socket.Port = "8006";
 
-        Ticket ticket = new Ticket();
-        Domain domain = new Domain();
+        ProxmoxConnection pmconn = new();
+
+        Ticket ticket = null;
+
         try
         {
-            await ticket.POST();
-            await domain.GET();
-        }
-        catch (ArgumentNullException ex)
-        {
-            Console.WriteLine(ex.Message);
+            ticket = await pmconn.getTicket();
         }
         catch (HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
         }
 
-        Console.WriteLine(ticket + "\n" + domain);
+        Console.WriteLine(ticket);
     }
 }
