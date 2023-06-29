@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="ProxmoxAPI">
-      <HintPath>..\ProxmoxAPI\bin\Debug\net7.0\ProxmoxAPI.dll</HintPath>
+      <HintPath>..\ProxmoxAPI\</HintPath>
     </Reference>
   </ItemGroup>
 

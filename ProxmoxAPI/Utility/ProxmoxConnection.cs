@@ -8,14 +8,6 @@ namespace ProxmoxAPI.Utility
 {
     public class ProxmoxConnection
     {
-        //public User? user { get; set; }
-        //public Socket socket { get; set; }
-
-        //public static Uri baseURI()
-        //{
-        //    return new Uri("https://" + socket + "/");
-        //}
-
         public ProxmoxConnection()
         {
             HttpInterface.client.BaseAddress = new Uri("https://" + Socket.ToString + "/");
